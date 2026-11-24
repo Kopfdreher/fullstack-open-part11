@@ -1,5 +1,7 @@
 # Full Stack Open — Part 11
 
+Live app: https://fullstack-open-part11.onrender.com/
+
 Solutions for [Full Stack Open, part 11: CI/CD](https://fullstackopen.com/en/part11).
 
 Parts 0–5: [fullstack-open-part00-05](https://github.com/Kopfdreher/fullstack-open-part00-05).
