@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  simple_deployment_pipeline:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -41,7 +41,7 @@ jobs:
           curl -f http://localhost:5001/version
 
   deploy:
-    needs: simple_deployment_pipeline
+    needs: [tests]
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
     runs-on: ubuntu-latest
     steps:
@@ -49,7 +49,7 @@ jobs:
         run: curl -f -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
 
   tag_release:
-    needs: [simple_deployment_pipeline, deploy]
+    needs: [deploy]
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
@@ -63,13 +63,13 @@ jobs:
           DEFAULT_BUMP: patch
 
   success_note:
-    needs: [simple_deployment_pipeline, deploy, tag_release]
+    needs: [deploy]
     if: ${{ github.event_name == 'push' && success() }}
     runs-on: ubuntu-latest
     steps:
       - uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCROD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: Success
           title: "New version deployed"
           description: "to https://fullstack-open-part11.onrender.com/ by ${{ github.event.head_commit.author.name }}"
@@ -78,13 +78,13 @@ jobs:
           color: 0x28a745
 
   failure_note:
-    needs: [simple_deployment_pipeline]
+    needs: [tests, deploy]
     if: ${{ github.event_name == 'push' && failure() }}
     runs-on: ubuntu-latest
     steps:
       - uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCROD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: Failure
           title: "Build was failing"
           description: |
@@ -92,4 +92,4 @@ jobs:
             ${{ github.event.head_commit.url }}
           url: "${{ github.event.head_commit.url }}"
           username: "Github Actions"
-          color: 0x01b24
+          color: 0xe01b24
