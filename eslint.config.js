@@ -57,11 +57,13 @@ module.exports = [
     },
     settings: {
       react: {
-        version: 'detect'
+        version: 'detect',
+        runtime: 'automatic'
       }
     },
     rules: {
       ...react.configs.recommended.rules,
+      ...react.configs['jsx-runtime'].rules,
       'indent': ['error', 2],
       'linebreak-style': ['error', 'unix'],
       'quotes': ['error', 'single'],

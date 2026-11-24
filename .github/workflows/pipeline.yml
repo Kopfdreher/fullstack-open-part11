@@ -39,10 +39,25 @@ jobs:
           npm run start-prod & sleep 5
           curl -f http://localhost:5001/health
           curl -f http://localhost:5001/version
+
   deploy:
     needs: simple_deployment_pipeline
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Render deploy
         run: curl -f -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+  tag_release:
+    needs: [simple_deployment_pipeline, deploy]
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.75.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
