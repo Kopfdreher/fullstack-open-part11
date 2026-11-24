@@ -57,7 +57,39 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.75.0
+        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+
+  success_note:
+    needs: [simple_deployment_pipeline, deploy, tag_release]
+    if: ${{ github.event_name == 'push' && success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCROD_WEBHOOK }}
+          status: Success
+          title: "New version deployed"
+          description: "to https://fullstack-open-part11.onrender.com/ by ${{ github.event.head_commit.author.name }}"
+          url: "${{ github.event.head_commit.url }}"
+          username: "Github Actions"
+          color: 0x28a745
+
+  failure_note:
+    needs: [simple_deployment_pipeline]
+    if: ${{ github.event_name == 'push' && failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCROD_WEBHOOK }}
+          status: Failure
+          title: "Build was failing"
+          description: |
+            commit ${{ github.event.head_commit.message }} by ${{ github.event.head_commit.author.name }} broke
+            ${{ github.event.head_commit.url }}
+          url: "${{ github.event.head_commit.url }}"
+          username: "Github Actions"
+          color: 0x01b24
