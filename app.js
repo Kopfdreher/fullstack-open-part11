@@ -4,6 +4,17 @@ const app = express()
 // get the port from env variable
 const PORT = process.env.PORT || 5001
 
+
+app.get('/version', (_req, res) => {
+  res.send('1')
+})
+
+app.get('/health', (_req, res) => {
+  // eslint-disable-next-line no-constant-condition
+  if (true) throw('error... ')
+  res.send('ok')
+})
+
 app.use(express.static('dist'))
 
 const start = async () => {
