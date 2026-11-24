@@ -69,7 +69,7 @@ jobs:
     steps:
       - uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCROD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: Success
           title: "New version deployed"
           description: "to https://fullstack-open-part11.onrender.com/ by ${{ github.event.head_commit.author.name }}"
@@ -84,7 +84,7 @@ jobs:
     steps:
       - uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCROD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: Failure
           title: "Build was failing"
           description: |
