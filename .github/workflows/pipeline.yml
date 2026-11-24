@@ -31,11 +31,11 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      #- name: Smoke test prod bundle
-      #  run: |
-      #    npm run start-prod & sleep 5
-      #    curl -f http://localhost:5001/health
-      #    curl -f http://localhost:5001/version
+      - name: Smoke test prod bundle
+        run: |
+          npm run start-prod & sleep 5
+          curl -f http://localhost:5001/health
+          curl -f http://localhost:5001/version
   deploy:
     needs: simple_deployment_pipeline
     if: ${{ github.ref == 'refs/heads/main' }}
