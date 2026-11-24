@@ -18,6 +18,12 @@ module.exports = {
   "plugins": [
     "react", "jest"
   ],
+  "settings": {
+    "react": {
+      "version": "detect",
+      "runtime": "automatic"
+    }
+  },
   "rules": {
     "indent": [
       "error",
@@ -44,6 +50,8 @@ module.exports = {
       "error", { "before": true, "after": true }
     ],
     "no-console": "error",
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": 0,
+    "react/jsx-uses-react": 0
   }
 }
